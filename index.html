@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dolores Sports Arena - Financial Statement & Weekly Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #cc0000;
+            --dark-red: #990000;
+            --plasada-green: #00b050;
+            --bg-gray: #f4f6f9;
+            --border-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* --- LOGIN PORTAL MODAL --- */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 8px;
+            border: 3px solid var(--primary-red);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .login-card select, .login-card input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .login-card button:hover {
+            background-color: var(--dark-red);
+        }
+
+        /* Top Bar User Session info */
+        .session-bar {
+            width: 100%;
+            max-width: 950px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #222;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .session-bar button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .sheet-container, .report-container {
+            width: 100%;
+            max-width: 950px;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Banner */
+        .banner {
+            background-color: var(--primary-red);
+            color: #ffffff;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            padding: 10px 5px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        /* Top Meta Fields */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            align-items: center;
+        }
+
+        .meta-grid input {
+            font-size: 15px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            width: 100%;
+            max-width: 300px;
+            background: #fafafa;
+            border-radius: 3px;
+        }
+
+        /* Main Grid Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .sheet-container:not(.force-landscape), 
+            .report-container:not(.force-landscape) { padding: 10px; }
+            .sheet-container:not(.force-landscape) .main-layout { grid-template-columns: 1fr; }
+            .sheet-container:not(.force-landscape) .meta-grid { grid-template-columns: 1fr; gap: 5px; }
+            .sheet-container:not(.force-landscape) .meta-grid input { max-width: 100%; margin-bottom: 8px; }
+        }
+
+        .force-landscape {
+            width: 950px !important;
+            max-width: 950px !important;
+            padding: 25px !important;
+            background: #ffffff !important;
+        }
+        .force-landscape .main-layout { grid-template-columns: 1fr 1fr !important; gap: 25px !important; }
+        .force-landscape .meta-grid { grid-template-columns: 120px 1fr !important; gap: 8px 15px !important; }
+        .force-landscape .meta-grid input { width: 250px !important; }
+        .force-landscape .banner { font-size: 28px !important; }
+        .force-landscape input, .force-landscape textarea, .force-landscape select, .force-landscape .actions, .force-landscape .actions-ignore { display: none !important; }
+
+        .snapshot-text {
+            display: none;
+            font-size: 15px;
+            font-weight: bold;
+            color: #000000;
+            padding: 4px 2px;
+            word-break: break-word;
+        }
+        .force-landscape .snapshot-text { display: block !important; }
+        .force-landscape textarea + .snapshot-text { white-space: pre-wrap; }
+        .force-landscape input.num-input + .snapshot-text, .force-landscape td input.num-input + .snapshot-text { text-align: right; }
+        .force-landscape td span.snapshot-text { display: block !important; }
+
+        /* Hide live calculated elements and reveal their snapshot versions during export */
+        .force-landscape .ds-fifty-val, 
+        .force-landscape .sc-seventy-val, 
+        .force-landscape .sc-thirty-val { 
+            display: none !important; 
+        }
+        .force-landscape .ds-fifty-snap, 
+        .force-landscape .sc-seventy-snap, 
+        .force-landscape .sc-thirty-snap { 
+            display: block !important; 
+            text-align: right !important; 
+        }
+
+        .section-title {
+            background-color: var(--primary-red);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            text-transform: uppercase;
+            font-size: 15px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 300px; }
+        table td, table th { padding: 8px 6px; border: 1px solid #333; font-weight: bold; font-size: 14px; }
+        table th { background-color: #f0f0f0; text-align: center; }
+
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%; border: none; outline: none; font-size: 15px; font-weight: bold; background: transparent; padding: 4px 2px;
+        }
+        input.num-input { text-align: right; }
+        input.r-date[readonly], input.r-desc[readonly], input.report-share[readonly] { cursor: not-allowed; color: #333; background-color: #f9f9f9; }
+
+        .label-cell { text-transform: uppercase; }
+        .plasada-bg { background-color: var(--plasada-green); color: white; }
+        .prize-bg { background-color: var(--primary-red); color: white; }
+        .summary-box { margin-top: 20px; }
+        .summary-row { display: flex; justify-content: space-between; border: 1px solid #333; padding: 10px; font-weight: bold; font-size: 16px; margin-bottom: 10px; background: #fdfdfd; }
+        .negative-val { color: #d9534f !important; }
+        .positive-val { color: #000000 !important; }
+
+        .signature-area { margin-top: 35px; width: 220px; text-align: center; }
+        .signature-line { border-top: 2px solid #000; padding-top: 5px; font-weight: bold; }
+        .signature-title { font-style: italic; font-weight: bold; font-size: 13px; }
+
+        .report-header { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: var(--dark-red); text-transform: uppercase; border-bottom: 2px solid var(--dark-red); padding-bottom: 5px; }
+        .report-subhead { font-size: 11px; color: #666; margin-bottom: 15px; font-style: italic; }
+
+        .history-bar { background: #e9ecef; border: 1px solid #ccc; padding: 12px; margin-bottom: 15px; display: flex; gap: 10px; align-items: stretch; flex-direction: column; border-radius: 4px; }
+        .history-bar label { font-weight: bold; font-size: 14px; }
+        .history-bar select, .history-bar input { border: 1px solid #888; background: #fff; padding: 8px; font-weight: normal; width: 100%; border-radius: 4px; }
+
+        .actions { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+        .btn { padding: 12px 16px; font-size: 14px; font-weight: bold; border: none; cursor: pointer; border-radius: 5px; color: white; flex: 1 1 auto; text-align: center; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 3px; min-height: 36px; width: 100%; }
+
+        .btn-photo { background-color: #28a745; }
+        .btn-reset { background-color: #6c757d; }
+        .btn-save { background-color: #007bff; }
+        .btn-send { background-color: #17a2b8; }
+        .btn-delete { background-color: #dc3545; }
+        .btn-warning { background-color: #ff9800; }
+
+        .shares-header { background-color: var(--primary-red); color: white; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+
+<div id="loginOverlay">
+    <div class="login-card">
+        <h2>Portal Login</h2>
+        <select id="loginRole">
+            <option value="viewer">Viewer Mode (Read-Only)</option>
+            <option value="admin">Admin Mode (Full Access)</option>
+        </select>
+        <input type="password" id="loginPasscode" placeholder="Enter Passcode">
+        <button onclick="handleLogin()">Log In</button>
+    </div>
+</div>
+
+<div class="session-bar" id="sessionBar" style="display: none;">
+    <span id="sessionStatusText">Logged in as: Viewer</span>
+    <button onclick="logoutPortal()">Log Out</button>
+</div>
+
+<div class="sheet-container" id="settlementSheet">
+    <div class="banner">Dolores Sports Arena</div>
+
+    <div class="meta-grid">
+        <div>DATE:</div>
+        <div>
+            <input type="date" id="eventDate" oninput="saveDraft()">
+            <span class="snapshot-text" id="snap-eventDate"></span>
+        </div>
+        <div>EVENT:</div>
+        <div>
+            <input type="text" id="eventName" placeholder="Event Name" oninput="saveDraft()">
+            <span class="snapshot-text" id="snap-eventName"></span>
+        </div>
+        <div>GOOD FIGHTS:</div>
+        <div>
+            <input type="text" id="goodFights" placeholder="Optional notes..." oninput="saveDraft()">
+            <span class="snapshot-text" id="snap-goodFights"></span>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div>
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <td class="label-cell plasada-bg">PLASADA</td>
+                        <td>
+                            <input type="text" inputmode="decimal" id="plasada" class="num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();">
+                            <span class="snapshot-text" id="snap-plasada">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell prize-bg">PRIZE</td>
+                        <td>
+                            <input type="text" inputmode="decimal" id="prize" class="num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();">
+                            <span class="snapshot-text" id="snap-prize">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">SALARY/EXP.</td>
+                        <td>
+                            <input type="text" id="salaryExpDisplay" class="num-input" readonly value="0">
+                            <span class="snapshot-text num-input" id="snap-salaryExpDisplay">0</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>TOTAL</span>
+                    <span id="totalDisplay" class="positive-val">0</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <tr>
+                            <td class="label-cell">PROGRAMMER 5%</td>
+                            <td id="progShareDisplay" class="positive-val" style="text-align: right;">0</td>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">MANAGEMENT 95%</td>
+                            <td id="mgmtShareDisplay" class="positive-val" style="text-align: right;">0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="signature-area">
+                <div>
+                    <input type="text" id="checkedBy" placeholder="Checker Name" style="text-align: center; font-size: 15px; border-bottom: 1px solid #ccc;" oninput="saveDraft()">
+                    <span class="snapshot-text" id="snap-checkedBy" style="text-align: center; border-bottom: 1px solid #000;"></span>
+                </div>
+                <div class="signature-line"></div>
+                <div class="signature-title">CHECKED BY</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Salary & Expenses</div>
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <td class="label-cell">TELLER</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">ADMIN</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">I.T.</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">I.T. MEAL</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">RUNNER</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">SECURITY</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">ELECTRIC</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">THERMAL</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">S.P.</td>
+                        <td><input type="text" inputmode="decimal" class="expense-item num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculate(); saveDraft();"><span class="snapshot-text num-input exp-snap">0</span></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell" style="text-align: right; font-weight: 900;">TOTAL</td>
+                        <td id="expenseTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-reset admin-only" onclick="resetForm()">Reset Form</button>
+        <button class="btn btn-photo" onclick="saveAsPhoto('settlementSheet', 'Dolores_Settlement_Sheet.png')">Save as Photo</button>
+        <button class="btn btn-send admin-only" onclick="sendToReport()">Send to Weekly Report</button>
+    </div>
+</div>
+
+<div class="report-container" id="reportSheet">
+    <div class="report-header">Weekly Programmer Share Report</div>
+    <div class="report-subhead">* Negative values show in red but are excluded from the Total Weekly Payout calculation. Date and Event description fields are locked once populated.</div>
+
+    <div class="history-bar actions-ignore">
+        <label for="reportHistorySelect">Review Past Weekly Reports:</label>
+        <select id="reportHistorySelect" onchange="switchWeeklyReport(this.value)">
+            <option value="current">-- Active Weekly Working Draft --</option>
+        </select>
+        <input type="text" id="reportTitle" placeholder="Report Title (e.g., Week 1 Batch)" oninput="saveWeeklyState()">
+        <span class="snapshot-text" id="snap-reportTitle"></span>
+        <button class="btn btn-save admin-only" style="margin-top: 5px;" onclick="saveWeeklyBatch()">Save Weekly Batch to History</button>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 25%;">Date</th>
+                    <th style="width: 28%;">Event Description</th>
+                    <th style="width: 22%;">Programmer 5% Share</th>
+                    <th style="width: 20%;" class="actions-ignore admin-only">Action</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                <script>
+                    for (let i = 1; i <= 7; i++) {
+                        document.write(`
+                            <tr id="day-row-${i}">
+                                <td style="text-align: center;" class="row-num">${i}</td>
+                                <td>
+                                    <input type="date" class="r-date" oninput="saveWeeklyState()">
+                                    <span class="snapshot-text r-date-snap"></span>
+                                </td>
+                                <td>
+                                    <input type="text" class="r-desc" placeholder="Empty" oninput="saveWeeklyState()">
+                                    <span class="snapshot-text r-desc-snap"></span>
+                                </td>
+                                <td>
+                                    <input type="text" inputmode="decimal" class="report-share num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculateReportTotal(); saveWeeklyState();">
+                                    <span class="snapshot-text num-input r-share-snap">0</span>
+                                </td>
+                                <td style="text-align: center;" class="actions-ignore admin-only">
+                                    <button class="btn btn-warning btn-sm" onclick="resetSingleDayWithPasscode(${i})">Reset Day ${i}</button>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                </script>
+                <tr>
+                    <td colspan="3" style="text-align: right; font-weight: 900;">TOTAL WEEKLY PAYOUT:</td>
+                    <td id="reportTotalDisplay" style="text-align: right; font-weight: 900; font-size: 16px;" class="positive-val">0</td>
+                    <td class="actions-ignore admin-only"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <label style="font-size: 13px; font-weight: bold; color: #333; text-transform: uppercase; display: block; margin-bottom: 5px;">Management Review Notes / Remarks:</label>
+        <textarea id="weeklyReviewNotes" placeholder="Enter week remarks, adjustments, or audit notes here..." rows="2" style="width: 100%; border: 1px solid #333; padding: 8px; font-size: 14px; border-radius: 4px; resize: vertical; background: #fafafa;" oninput="saveWeeklyState()"></textarea>
+        <span class="snapshot-text" id="snap-weeklyReviewNotes" style="border: 1px solid #333; padding: 8px; min-height: 40px; background: #fafafa;"></span>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-reset admin-only" onclick="resetAllDaysWithPasscode()">Reset All Days</button>
+        <button class="btn btn-photo" onclick="saveAsPhoto('reportSheet', 'Weekly_Programmer_Report.png')">Save Weekly Report as Photo</button>
+    </div>
+</div>
+
+<div class="report-container" id="drawShareSheet">
+    <div class="report-header">Draw Share Report</div>
+    <div class="report-subhead">* Input dates and Net Gains to automatically sort and calculate the 50% split (rounded off to whole numbers).</div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="3" class="shares-header">DRAW SHARE</th>
+                </tr>
+                <tr>
+                    <th style="width: 35%;">DATE</th>
+                    <th style="width: 35%;">NET GAIN</th>
+                    <th style="width: 30%;">50%</th>
+                </tr>
+            </thead>
+            <tbody id="drawShareBody">
+                <script>
+                    for (let i = 1; i <= 5; i++) {
+                        document.write(`
+                            <tr>
+                                <td>
+                                    <input type="date" class="ds-date" oninput="calculateDrawShares(); saveDrawSharesState()">
+                                    <span class="snapshot-text ds-date-snap"></span>
+                                </td>
+                                <td>
+                                    <input type="text" inputmode="decimal" class="ds-net num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculateDrawShares(); saveDrawSharesState()">
+                                    <span class="snapshot-text num-input ds-net-snap">0</span>
+                                </td>
+                                <td class="ds-fifty" style="text-align: right;">
+                                    <span class="ds-fifty-val" style="display:inline-block;">-</span>
+                                    <span class="snapshot-text num-input ds-fifty-snap" style="text-align: right; display:none;">-</span>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                </script>
+                <tr>
+                    <td style="text-align: center; font-weight: 900;">TOTAL</td>
+                    <td id="dsNetTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                    <td id="dsFiftyTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-reset admin-only" onclick="resetDrawSharesWithPasscode()">Reset Draw Share</button>
+        <button class="btn btn-photo" onclick="saveAsPhoto('drawShareSheet', 'Draw_Share.png')">Save Draw Share as Photo</button>
+    </div>
+</div>
+
+<div class="report-container" id="shadowSheet">
+    <div class="report-header">Shadow Collective Report</div>
+    <div class="report-subhead">* Input dates and Net Gains to automatically sort and calculate the 70% and 30% splits (rounded off to whole numbers).</div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4" class="shares-header">SHADOW COLLECTIVE</th>
+                </tr>
+                <tr>
+                    <th style="width: 28%;">DATE</th>
+                    <th style="width: 28%;">NET GAIN</th>
+                    <th style="width: 22%;">70%</th>
+                    <th style="width: 22%;">30%</th>
+                </tr>
+            </thead>
+            <tbody id="shadowBody">
+                <script>
+                    for (let i = 1; i <= 10; i++) {
+                        document.write(`
+                            <tr>
+                                <td>
+                                    <input type="date" class="sc-date" oninput="calculateShadowShares(); saveShadowState()">
+                                    <span class="snapshot-text sc-date-snap"></span>
+                                </td>
+                                <td>
+                                    <input type="text" inputmode="decimal" class="sc-net num-input" placeholder="0" onfocus="handleNumFocus(this)" oninput="formatNumberInput(this); calculateShadowShares(); saveShadowState()">
+                                    <span class="snapshot-text num-input sc-net-snap">0</span>
+                                </td>
+                                <td class="sc-seventy" style="text-align: right;">
+                                    <span class="sc-seventy-val" style="display:inline-block;">-</span>
+                                    <span class="snapshot-text num-input sc-seventy-snap" style="text-align: right; display:none;">-</span>
+                                </td>
+                                <td class="sc-thirty" style="text-align: right;">
+                                    <span class="sc-thirty-val" style="display:inline-block;">-</span>
+                                    <span class="snapshot-text num-input sc-thirty-snap" style="text-align: right; display:none;">-</span>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                </script>
+                <tr>
+                    <td style="text-align: center; font-weight: 900;">TOTAL</td>
+                    <td id="scNetTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                    <td id="scSeventyTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                    <td id="scThirtyTotalDisplay" style="text-align: right; font-weight: 900;">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-reset admin-only" onclick="resetShadowSharesWithPasscode()">Reset Shadow Collective</button>
+        <button class="btn btn-photo" onclick="saveAsPhoto('shadowSheet', 'Shadow_Collective.png')">Save Shadow Collective as Photo</button>
+    </div>
+</div>
+
+<div class="report-container actions-ignore admin-only" id="storageManagerSheet" style="background: #fff8f8; border-color: #cc0000;">
+    <div class="report-header" style="color: var(--primary-red);">Local Storage Manager</div>
+    <div class="report-subhead">Manage browser storage records, view saved key sets, or clear specific history batches.</div>
+    <div style="margin-bottom: 10px;">
+        <button class="btn btn-sm btn-save" onclick="refreshStorageKeys()" style="width: auto;">Refresh Stored Keys List</button>
+        <button class="btn btn-sm btn-delete" onclick="clearAllStorageWithPasscode()" style="width: auto; background-color: #990000;">Clear All Browser Data</button>
+    </div>
+    <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">Current Saved Keys in Browser:</div>
+    <div id="storageKeysList" style="background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 150px; overflow-y: auto;">
+        </div>
+</div>
+
+<script>
+    const ACTION_PASSCODE = "spiderman";
+    let currentRole = null;
+    let activeWeeklyKey = "dolores_weekly_active";
+
+    // When clicking/focusing a number input, move cursor to the end so backspace deletes from right to left naturally
+    function handleNumFocus(input) {
+        setTimeout(() => {
+            try {
+                let len = input.value.length;
+                input.setSelectionRange(len, len);
+            } catch(e) {}
+        }, 10);
+    }
+
+    function formatNumberInput(input) {
+        let cursorPosition = input.selectionStart;
+        let originalLength = input.value.length;
+        
+        let isNegative = input.value.trim().startsWith('-');
+        let rawValue = input.value.replace(/[^0-9.]/g, '');
+        let parts = rawValue.split('.');
+        if (parts.length > 2) {
+            rawValue = parts[0] + '.' + parts.slice(1).join('');
+        }
+
+        if (rawValue === "") {
+            input.value = isNegative ? "-" : "";
+            return;
+        }
+
+        let integerPart = parts[0];
+        let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+        
+        let formattedInteger = integerPart === "" ? "" : Number(integerPart).toLocaleString('en-US');
+        input.value = (isNegative ? "-" : "") + formattedInteger + decimalPart;
+
+        let newLength = input.value.length;
+        cursorPosition = Math.max(0, cursorPosition + (newLength - originalLength));
+        try {
+            input.setSelectionRange(cursorPosition, cursorPosition);
+        } catch (e) {}
+    }
+
+    // Global Enter Key listener to navigate to the next focusable input row/field automatically
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA')) {
+                if (activeEl.id === 'loginPasscode') return; // Handled separately
+                
+                // Collect all visible, enabled input elements on the page that can be tabbed through
+                const focusables = Array.from(document.querySelectorAll('input:not([disabled]), select:not([disabled]), textarea:not([disabled])'))
+                    .filter(el => el.offsetParent !== null && !el.readOnly);
+                
+                const index = focusables.indexOf(activeEl);
+                if (index > -1 && index + 1 < focusables.length) {
+                    e.preventDefault();
+                    focusables[index + 1].focus();
+                    if (focusables[index + 1].select) {
+                        focusables[index + 1].select();
+                    }
+                }
+            }
+        }
+    });
+
+    function handleLogin() {
+        const role = document.getElementById('loginRole').value;
+        const passcode = document.getElementById('loginPasscode').value;
+
+        if (role === 'viewer') {
+            if (passcode === 'dolores123') {
+                currentRole = 'viewer';
+                localStorage.setItem('dolores_user_role', currentRole);
+                initSession();
+            } else {
+                alert('Incorrect Viewer passcode!');
+            }
+        } else if (role === 'admin') {
+            if (passcode === 'spiderman') {
+                currentRole = 'admin';
+                localStorage.setItem('dolores_user_role', currentRole);
+                initSession();
+            } else {
+                alert('Incorrect Admin passcode!');
+            }
+        }
+    }
+
+    document.getElementById('loginPasscode').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleLogin();
+        }
+    });
+
+    function initSession() {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('sessionBar').style.display = 'flex';
+        document.getElementById('sessionStatusText').textContent = `Logged in as: ${currentRole.toUpperCase()}`;
+
+        const adminElements = document.querySelectorAll('.admin-only');
+        if (currentRole === 'viewer') {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if(el.id !== 'reportHistorySelect' && el.id !== 'loginRole' && el.id !== 'loginPasscode') {
+                    el.setAttribute('disabled', 'true');
+                }
+            });
+            adminElements.forEach(el => el.style.display = 'none');
+        } else {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.removeAttribute('disabled');
+            });
+            applyWeeklyLockState();
+            adminElements.forEach(el => el.style.display = '');
+            refreshStorageKeys();
+        }
+    }
+
+    function logoutPortal() {
+        currentRole = null;
+        localStorage.removeItem('dolores_user_role');
+        document.getElementById('loginPasscode').value = '';
+        document.getElementById('sessionBar').style.display = 'none';
+        document.getElementById('loginOverlay').style.display = 'flex';
+    }
+
+    function verifyPasscode() {
+        if (currentRole === 'viewer') {
+            alert("Action restricted! Viewer mode is read-only.");
+            return false;
+        }
+        const input = prompt("Enter Admin Passcode to proceed:");
+        if (input === ACTION_PASSCODE) {
+            return true;
+        } else if (input !== null) {
+            alert("Incorrect passcode!");
+        }
+        return false;
+    }
+
+    function calculate() {
+        let plasada = Math.round(parseFloat(document.getElementById('plasada').value.replace(/,/g, '')) || 0);
+        let prize = Math.round(parseFloat(document.getElementById('prize').value.replace(/,/g, '')) || 0);
+        
+        let expenseInputs = document.querySelectorAll('.expense-item');
+        let totalExpense = 0;
+        expenseInputs.forEach((el, index) => {
+            let val = Math.round(parseFloat(el.value.replace(/,/g, '')) || 0);
+            totalExpense += val;
+            let snap = document.querySelectorAll('.exp-snap')[index];
+            if(snap) snap.textContent = val.toLocaleString('en-US');
+        });
+
+        document.getElementById('salaryExpDisplay').value = totalExpense.toLocaleString('en-US');
+        let snapSalary = document.getElementById('snap-salaryExpDisplay');
+        if(snapSalary) snapSalary.textContent = totalExpense.toLocaleString('en-US');
+        document.getElementById('expenseTotalDisplay').textContent = totalExpense.toLocaleString('en-US');
+
+        let total = plasada - prize - totalExpense;
+        let totalRounded = Math.round(total);
+        let totalEl = document.getElementById('totalDisplay');
+        totalEl.textContent = totalRounded.toLocaleString('en-US');
+        totalEl.className = totalRounded < 0 ? 'negative-val' : 'positive-val';
+
+        let progShare = Math.round(total * 0.05);
+        let mgmtShare = Math.round(total - progShare);
+
+        let progEl = document.getElementById('progShareDisplay');
+        progEl.textContent = progShare.toLocaleString('en-US');
+        progEl.className = progShare < 0 ? 'negative-val' : 'positive-val';
+
+        let mgmtEl = document.getElementById('mgmtShareDisplay');
+        mgmtEl.textContent = mgmtShare.toLocaleString('en-US');
+        mgmtEl.className = mgmtShare < 0 ? 'negative-val' : 'positive-val';
+
+        document.getElementById('snap-eventDate').textContent = document.getElementById('eventDate').value;
+        document.getElementById('snap-eventName').textContent = document.getElementById('eventName').value;
+        document.getElementById('snap-goodFights').textContent = document.getElementById('goodFights').value;
+        document.getElementById('snap-checkedBy').textContent = document.getElementById('checkedBy').value;
+        document.getElementById('snap-plasada').textContent = document.getElementById('plasada').value || '0';
+        document.getElementById('snap-prize').textContent = document.getElementById('prize').value || '0';
+    }
+
+    function calculateReportTotal() {
+        let total = 0;
+        for (let i = 1; i <= 7; i++) {
+            let shareInput = document.querySelector(`#day-row-${i} .report-share`);
+            let val = Math.round(parseFloat(shareInput.value.replace(/,/g, '')) || 0);
+            
+            if (val > 0) {
+                total += val;
+            }
+            
+            if (val < 0) {
+                shareInput.style.color = '#d9534f';
+            } else {
+                shareInput.style.color = '#333';
+            }
+
+            document.querySelector(`#day-row-${i} .r-date-snap`).textContent = document.querySelector(`#day-row-${i} .r-date`).value;
+            document.querySelector(`#day-row-${i} .r-desc-snap`).textContent = document.querySelector(`#day-row-${i} .r-desc`).value;
+            
+            let snapShare = document.querySelector(`#day-row-${i} .r-share-snap`);
+            snapShare.textContent = shareInput.value || '0';
+            snapShare.className = "snapshot-text num-input r-share-snap " + (val < 0 ? 'negative-val' : 'positive-val');
+        }
+        
+        let reportTotalEl = document.getElementById('reportTotalDisplay');
+        reportTotalEl.textContent = Math.round(total).toLocaleString('en-US');
+        reportTotalEl.className = "positive-val";
+
+        document.getElementById('snap-reportTitle').textContent = document.getElementById('reportTitle').value;
+        document.getElementById('snap-weeklyReviewNotes').textContent = document.getElementById('weeklyReviewNotes').value;
+        
+        applyWeeklyLockState();
+    }
+
+    function applyWeeklyLockState() {
+        for (let i = 1; i <= 7; i++) {
+            let rDate = document.querySelector(`#day-row-${i} .r-date`);
+            let rDesc = document.querySelector(`#day-row-${i} .r-desc`);
+            if (rDate && rDate.value) {
+                rDate.setAttribute('readonly', 'true');
+            } else {
+                rDate.removeAttribute('readonly');
+            }
+            if (rDesc && rDesc.value) {
+                rDesc.setAttribute('readonly', 'true');
+            } else {
+                rDesc.removeAttribute('readonly');
+            }
+        }
+    }
+
+    function calculateDrawShares() {
+        let netTotal = 0;
+        let fiftyTotal = 0;
+        const rows = document.querySelectorAll('#drawShareBody tr');
+        rows.forEach((row, idx) => {
+            if(idx >= 5) return;
+            let dateInput = row.querySelector('.ds-date');
+            let netInput = row.querySelector('.ds-net');
+            let fiftyCell = row.querySelector('.ds-fifty-val');
+            let dateSnap = row.querySelector('.ds-date-snap');
+            let netSnap = row.querySelector('.ds-net-snap');
+            let fiftySnap = row.querySelector('.ds-fifty-snap');
+
+            let netVal = Math.round(parseFloat(netInput.value.replace(/,/g, '')) || 0);
+            let fiftyVal = Math.round(netVal * 0.5);
+
+            if(dateSnap) dateSnap.textContent = dateInput.value;
+            if(netSnap) netSnap.textContent = netInput.value || '0';
+            
+            let formattedFifty = fiftyVal !== 0 ? fiftyVal.toLocaleString('en-US') : '-';
+            let valClassName = fiftyVal < 0 ? 'negative-val' : 'positive-val';
+
+            if(fiftySnap) {
+                fiftySnap.textContent = formattedFifty;
+                fiftySnap.className = "snapshot-text num-input ds-fifty-snap " + valClassName;
+            }
+
+            netTotal += netVal;
+            fiftyTotal += fiftyVal;
+            fiftyCell.textContent = formattedFifty;
+            fiftyCell.className = "ds-fifty-val " + valClassName;
+            if(fiftyCell) fiftyCell.style.display = "inline-block";
+        });
+        document.getElementById('dsNetTotalDisplay').textContent = Math.round(netTotal).toLocaleString('en-US');
+        document.getElementById('dsFiftyTotalDisplay').textContent = Math.round(fiftyTotal).toLocaleString('en-US');
+    }
+
+    function calculateShadowShares() {
+        let netTotal = 0;
+        let sevTotal = 0;
+        let thTotal = 0;
+        const rows = document.querySelectorAll('#shadowBody tr');
+        rows.forEach((row, idx) => {
+            if(idx >= 10) return;
+            let dateInput = row.querySelector('.sc-date');
+            let netInput = row.querySelector('.sc-net');
+            let sevCell = row.querySelector('.sc-seventy-val');
+            let thCell = row.querySelector('.sc-thirty-val');
+            let dateSnap = row.querySelector('.sc-date-snap');
+            let netSnap = row.querySelector('.sc-net-snap');
+            let sevSnap = row.querySelector('.sc-seventy-snap');
+            let thSnap = row.querySelector('.sc-thirty-snap');
+
+            let netVal = Math.round(parseFloat(netInput.value.replace(/,/g, '')) || 0);
+            let sevVal = Math.round(netVal * 0.7);
+            let thVal = Math.round(netVal * 0.3);
+
+            if(dateSnap) dateSnap.textContent = dateInput.value;
+            if(netSnap) netSnap.textContent = netInput.value || '0';
+
+            let formattedSev = sevVal !== 0 ? sevVal.toLocaleString('en-US') : '-';
+            let sevClassName = sevVal < 0 ? 'negative-val' : 'positive-val';
+
+            let formattedTh = thVal !== 0 ? thVal.toLocaleString('en-US') : '-';
+            let thClassName = thVal < 0 ? 'negative-val' : 'positive-val';
+
+            if(sevSnap) {
+                sevSnap.textContent = formattedSev;
+                sevSnap.className = "snapshot-text num-input sc-seventy-snap " + sevClassName;
+            }
+            if(thSnap) {
+                thSnap.textContent = formattedTh;
+                thSnap.className = "snapshot-text num-input sc-thirty-snap " + thClassName;
+            }
+
+            netTotal += netVal;
+            sevTotal += sevVal;
+            thTotal += thVal;
+            
+            sevCell.textContent = formattedSev;
+            sevCell.className = "sc-seventy-val " + sevClassName;
+            if(sevCell) sevCell.style.display = "inline-block";
+            
+            thCell.textContent = formattedTh;
+            thCell.className = "sc-thirty-val " + thClassName;
+            if(thCell) thCell.style.display = "inline-block";
+        });
+        document.getElementById('scNetTotalDisplay').textContent = Math.round(netTotal).toLocaleString('en-US');
+        document.getElementById('scSeventyTotalDisplay').textContent = Math.round(sevTotal).toLocaleString('en-US');
+        document.getElementById('scThirtyTotalDisplay').textContent = Math.round(thTotal).toLocaleString('en-US');
+    }
+
+    function saveDraft() {
+        let draft = {
+            eventDate: document.getElementById('eventDate').value,
+            eventName: document.getElementById('eventName').value,
+            goodFights: document.getElementById('goodFights').value,
+            plasada: document.getElementById('plasada').value,
+            prize: document.getElementById('prize').value,
+            checkedBy: document.getElementById('checkedBy').value,
+            expenses: Array.from(document.querySelectorAll('.expense-item')).map(el => el.value)
+        };
+        localStorage.setItem('dolores_settlement_draft', JSON.stringify(draft));
+        refreshStorageKeys();
+    }
+
+    function loadDraft() {
+        let saved = localStorage.getItem('dolores_settlement_draft');
+        if (!saved) return;
+        try {
+            let draft = JSON.parse(saved);
+            document.getElementById('eventDate').value = draft.eventDate || '';
+            document.getElementById('eventName').value = draft.eventName || '';
+            document.getElementById('goodFights').value = draft.goodFights || '';
+            document.getElementById('plasada').value = draft.plasada || '';
+            document.getElementById('prize').value = draft.prize || '';
+            document.getElementById('checkedBy').value = draft.checkedBy || '';
+            if (draft.expenses) {
+                let expInputs = document.querySelectorAll('.expense-item');
+                draft.expenses.forEach((val, idx) => {
+                    if (expInputs[idx]) expInputs[idx].value = val;
+                });
+            }
+            calculate();
+        } catch(e) {}
+    }
+
+    function sendToReport() {
+        let date = document.getElementById('eventDate').value;
+        let eventName = document.getElementById('eventName').value;
+        let progShareText = document.getElementById('progShareDisplay').textContent;
+
+        if (!date && !eventName) {
+            alert("Please enter a date or event name before sending to report.");
+            return;
+        }
+
+        let targetRow = null;
+        for (let i = 1; i <= 7; i++) {
+            let dInput = document.querySelector(`#day-row-${i} .r-date`);
+            if (!dInput.value) {
+                targetRow = i;
+                break;
+            }
+        }
+
+        if (!targetRow) {
+            alert("All 7 rows in the current weekly report are filled! Save this batch or reset a day.");
+            return;
+        }
+
+        let rDateInput = document.querySelector(`#day-row-${targetRow} .r-date`);
+        let rDescInput = document.querySelector(`#day-row-${targetRow} .r-desc`);
+        
+        rDateInput.value = date;
+        rDateInput.setAttribute('readonly', 'true');
+        
+        rDescInput.value = eventName;
+        rDescInput.setAttribute('readonly', 'true');
+        
+        document.querySelector(`#day-row-${targetRow} .report-share`).value = progShareText;
+
+        calculateReportTotal();
+        saveWeeklyState();
+        alert(`Successfully sent event to Weekly Report (Day ${targetRow})! Fields are now locked.`);
+        window.location.hash = 'reportSheet';
+    }
+
+    function saveWeeklyState() {
+        let data = {
+            title: document.getElementById('reportTitle').value,
+            notes: document.getElementById('weeklyReviewNotes').value,
+            days: []
+        };
+        for (let i = 1; i <= 7; i++) {
+            data.days.push({
+                date: document.querySelector(`#day-row-${i} .r-date`).value,
+                desc: document.querySelector(`#day-row-${i} .r-desc`).value,
+                share: document.querySelector(`#day-row-${i} .report-share`).value
+            });
+        }
+        localStorage.setItem(activeWeeklyKey, JSON.stringify(data));
+        refreshStorageKeys();
+    }
+
+    function loadWeeklyState() {
+        let saved = localStorage.getItem(activeWeeklyKey);
+        if (!saved) return;
+        try {
+            let data = JSON.parse(saved);
+            document.getElementById('reportTitle').value = data.title || '';
+            document.getElementById('weeklyReviewNotes').value = data.notes || '';
+            if (data.days) {
+                data.days.forEach((d, idx) => {
+                    let i = idx + 1;
+                    let rDate = document.querySelector(`#day-row-${i} .r-date`);
+                    let rDesc = document.querySelector(`#day-row-${i} .r-desc`);
+                    let rShare = document.querySelector(`#day-row-${i} .report-share`);
+                    if(rDate) rDate.value = d.date || '';
+                    if(rDesc) rDesc.value = d.desc || '';
+                    if(rShare) rShare.value = d.share || '';
+                });
+            }
+            calculateReportTotal();
+        } catch(e) {}
+    }
+
+    function saveWeeklyBatch() {
+        if (!verifyPasscode()) return;
+        let title = document.getElementById('reportTitle').value || 'Weekly Report Batch ' + new Date().toLocaleDateString();
+        let batchKey = 'dolores_batch_' + Date.now();
+        
+        let data = {
+            title: title,
+            notes: document.getElementById('weeklyReviewNotes').value,
+            days: []
+        };
+        for (let i = 1; i <= 7; i++) {
+            data.days.push({
+                date: document.querySelector(`#day-row-${i} .r-date`).value,
+                desc: document.querySelector(`#day-row-${i} .r-desc`).value,
+                share: document.querySelector(`#day-row-${i} .report-share`).value
+            });
+        }
+        
+        localStorage.setItem(batchKey, JSON.stringify(data));
+        updateHistorySelectOptions();
+        refreshStorageKeys();
+        alert(`Weekly batch "${title}" saved successfully to storage history!`);
+    }
+
+    function updateHistorySelectOptions() {
+        let select = document.getElementById('reportHistorySelect');
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key.startsWith('dolores_batch_')) {
+                try {
+                    let batch = JSON.parse(localStorage.getItem(key));
+                    let opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = batch.title || key;
+                    select.appendChild(opt);
+                } catch(e) {}
+            }
+        }
+    }
+
+    function switchWeeklyReport(val) {
+        if (val === 'current') {
+            activeWeeklyKey = 'dolores_weekly_active';
+            loadWeeklyState();
+        } else {
+            activeWeeklyKey = val;
+            loadWeeklyState();
+        }
+    }
+
+    function saveDrawSharesState() {
+        let items = [];
+        document.querySelectorAll('#drawShareBody tr').forEach((row, idx) => {
+            if(idx >= 5) return;
+            items.push({
+                date: row.querySelector('.ds-date').value,
+                net: row.querySelector('.ds-net').value
+            });
+        });
+        localStorage.setItem('dolores_draw_shares', JSON.stringify(items));
+        refreshStorageKeys();
+    }
+
+    function loadDrawSharesState() {
+        let saved = localStorage.getItem('dolores_draw_shares');
+        if(!saved) return;
+        try {
+            let items = JSON.parse(saved);
+            const rows = document.querySelectorAll('#drawShareBody tr');
+            items.forEach((item, idx) => {
+                if(rows[idx]) {
+                    rows[idx].querySelector('.ds-date').value = item.date || '';
+                    rows[idx].querySelector('.ds-net').value = item.net || '';
+                }
+            });
+            calculateDrawShares();
+        } catch(e) {}
+    }
+
+    function saveShadowState() {
+        let items = [];
+        document.querySelectorAll('#shadowBody tr').forEach((row, idx) => {
+            if(idx >= 10) return;
+            items.push({
+                date: row.querySelector('.sc-date').value,
+                net: row.querySelector('.sc-net').value
+            });
+        });
+        localStorage.setItem('dolores_shadow_shares', JSON.stringify(items));
+        refreshStorageKeys();
+    }
+
+    function loadShadowState() {
+        let saved = localStorage.getItem('dolores_shadow_shares');
+        if(!saved) return;
+        try {
+            let items = JSON.parse(saved);
+            const rows = document.querySelectorAll('#shadowBody tr');
+            items.forEach((item, idx) => {
+                if(rows[idx]) {
+                    rows[idx].querySelector('.sc-date').value = item.date || '';
+                    rows[idx].querySelector('.sc-net').value = item.net || '';
+                }
+            });
+            calculateShadowShares();
+        } catch(e) {}
+    }
+
+    function refreshStorageKeys() {
+        let container = document.getElementById('storageKeysList');
+        if (!container) return;
+        let html = "";
+        if (localStorage.length === 0) {
+            html = "<i>No keys found in local storage.</i>";
+        } else {
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                let val = localStorage.getItem(key);
+                if (val && val.length > 80) val = val.substring(0, 80) + '...';
+                html += `<div><strong>${key}</strong>: ${val}</div><hr style="margin: 4px 0; border:0; border-top:1px solid #eee;">`;
+            }
+        }
+        container.innerHTML = html;
+    }
+
+    function clearAllStorageWithPasscode() {
+        if (!verifyPasscode()) return;
+        if (confirm("Are you sure you want to clear all local storage records? This will remove all saved drafts and batches.")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    function resetForm() { 
+        if(verifyPasscode()) {
+            document.getElementById('settlementSheet').querySelectorAll('input').forEach(i => i.value = '');
+            localStorage.removeItem('dolores_settlement_draft');
+            calculate();
+            refreshStorageKeys();
+        } 
+    }
+
+    function resetSingleDayWithPasscode(i) { 
+        if(verifyPasscode()) {
+            let rDate = document.querySelector(`#day-row-${i} .r-date`);
+            let rDesc = document.querySelector(`#day-row-${i} .r-desc`);
+            rDate.value = '';
+            rDate.removeAttribute('readonly');
+            rDesc.value = '';
+            rDesc.removeAttribute('readonly');
+            document.querySelector(`#day-row-${i} .report-share`).value = '';
+            calculateReportTotal();
+            saveWeeklyState();
+        } 
+    }
+
+    function resetAllDaysWithPasscode() { 
+        if(verifyPasscode()) {
+            for (let i = 1; i <= 7; i++) {
+                let rDate = document.querySelector(`#day-row-${i} .r-date`);
+                let rDesc = document.querySelector(`#day-row-${i} .r-desc`);
+                rDate.value = '';
+                rDate.removeAttribute('readonly');
+                rDesc.value = '';
+                rDesc.removeAttribute('readonly');
+                document.querySelector(`#day-row-${i} .report-share`).value = '';
+            }
+            document.getElementById('reportTitle').value = '';
+            document.getElementById('weeklyReviewNotes').value = '';
+            calculateReportTotal();
+            saveWeeklyState();
+        } 
+    }
+
+    function resetDrawSharesWithPasscode() { 
+        if(verifyPasscode()) {
+            document.querySelectorAll('#drawShareBody tr').forEach((row, idx) => {
+                if(idx >= 5) return;
+                row.querySelector('.ds-date').value = '';
+                row.querySelector('.ds-net').value = '';
+            });
+            calculateDrawShares();
+            localStorage.removeItem('dolores_draw_shares');
+            refreshStorageKeys();
+        } 
+    }
+
+    function resetShadowSharesWithPasscode() { 
+        if(verifyPasscode()) {
+            document.querySelectorAll('#shadowBody tr').forEach((row, idx) => {
+                if(idx >= 10) return;
+                row.querySelector('.sc-date').value = '';
+                row.querySelector('.sc-net').value = '';
+            });
+            calculateShadowShares();
+            localStorage.removeItem('dolores_shadow_shares');
+            refreshStorageKeys();
+        } 
+    }
+    
+    function saveAsPhoto(containerId, filename) {
+        const element = document.getElementById(containerId);
+        element.classList.add('force-landscape');
+        html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+            element.classList.remove('force-landscape');
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(err => {
+            element.classList.remove('force-landscape');
+            alert('Error generating snapshot photo.');
+        });
+    }
+
+    window.onload = function() {
+        const savedRole = localStorage.getItem('dolores_user_role');
+        if (savedRole) {
+            currentRole = savedRole;
+            initSession();
+        }
+        loadDraft();
+        loadWeeklyState();
+        loadDrawSharesState();
+        loadShadowState();
+        updateHistorySelectOptions();
+        refreshStorageKeys();
+        calculate();
+        calculateReportTotal();
+        calculateDrawShares();
+        calculateShadowShares();
+    };
+</script>
+</body>
+</html>
